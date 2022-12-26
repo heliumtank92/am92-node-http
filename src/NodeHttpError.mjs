@@ -8,12 +8,12 @@ export default class NodeHttpError extends Error {
 
     super()
 
-    const { message, statusCode, errorCode, data } = eMap || {}
+    const { message, statusCode, errorCode = 'NODE_HTTP::UNKWON', data } = eMap || {}
     const {
       message: eMessage,
       msg: eMsg,
       statusCode: eStatusCode,
-      errorCode: eErrorCode = 'NODE_HTTP::UNKWON',
+      errorCode: eErrorCode,
       code: eCode
     } = e
 

@@ -1,4 +1,10 @@
-const logger = {}
+import http from 'http'
+
+// TODO: Change import from api-logger pacakge when published
+const ApiLogger = {
+  error: () => undefined,
+  trace: () => undefined
+}
 
 const LogInterceptor = {
   request: [requestSuccess, requestError, { synchronous: true }],
@@ -9,25 +15,25 @@ export default LogInterceptor
 
 function requestSuccess (config) {
   const logObject = _buildRequestLogMeta(config)
-  logger.trace(logObject)
+  ApiLogger.trace(logObject)
   return config
 }
 
 function requestError (error) {
   const logObject = _buildRequestLogMeta(error)
-  logger.error(logObject)
+  ApiLogger.error(logObject)
   throw error
 }
 
 function responseSuccess (response) {
   const logObject = _buildResponseLogMeta(response)
-  logger.trace(logObject)
+  ApiLogger.trace(logObject)
   return response
 }
 
 function responseError (error) {
   const logObject = _buildResponseLogMeta(error)
-  logger.error(logObject)
+  ApiLogger.error(logObject)
   throw error
 }
 
@@ -58,21 +64,23 @@ function _buildRequestLogMeta (config = {}) {
 
 function _buildResponseLogMeta (response) {
   const {
-    status = 500,
-    statusText = '',
+    message,
+    status: statusCode = 500,
     headers = {},
     data = {},
-    request = {}
+    config = {}
   } = response
-  const { method = '', url = '' } = request
 
-  const message = `[NodeHttp|Response] | ${method} ${url} | ${status} ${statusText}`
+  const { method = '', url = '' } = config
+  const status = http.STATUS_CODES[statusCode]
+
+  const msg = `[NodeHttp|Response] | ${method} ${url} | ${statusCode} ${status} | ${message}`
   const logObject = {
     type: 'NODE_HTTP',
-    message,
+    message: msg,
     res: {
-      statusCode: status,
-      status: statusText,
+      statusCode,
+      status,
       headers: JSON.stringify(headers),
       body: JSON.stringify(data),
       responseMessage: '',
