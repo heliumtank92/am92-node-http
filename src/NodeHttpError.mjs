@@ -13,7 +13,7 @@ export default class NodeHttpError extends Error {
       message: eMessage,
       msg: eMsg,
       statusCode: eStatusCode,
-      errorCode: eErrorCode,
+      errorCode: eErrorCode = 'NODE_HTTP::UNKWON',
       code: eCode
     } = e
 

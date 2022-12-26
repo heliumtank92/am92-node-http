@@ -1,13 +1,11 @@
+const logger = {}
+
 const LogInterceptor = {
-  requestSuccess,
-  requestError,
-  responseSuccess,
-  responseError
+  request: [requestSuccess, requestError, { synchronous: true }],
+  response: [responseSuccess, responseError, { synchronous: true }]
 }
 
 export default LogInterceptor
-
-const logger = {}
 
 function requestSuccess (config) {
   const logObject = _buildRequestLogMeta(config)
