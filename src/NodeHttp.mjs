@@ -11,7 +11,6 @@ export default class NodeHttp {
   constructor (CONFIG = {}) {
     // Configurations
     const config = { ...DEFAULT_CONFIG, ...CONFIG }
-    console.log('config', config)
 
     // Create Axios Instance & Attach Axios Retry
     this.client = axios.create(config)
