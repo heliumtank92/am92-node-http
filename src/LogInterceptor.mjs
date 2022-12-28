@@ -46,7 +46,7 @@ async function _logRequest (config = {}) {
     method = '',
     headers = {},
     data = {},
-    diableBodyLog
+    disableBodyLog
   } = config
 
   const axiosRetry = config['axios-retry']
@@ -61,7 +61,7 @@ async function _logRequest (config = {}) {
       url,
       method,
       headers,
-      body: (!diableBodyLog && data) || ''
+      body: (!disableBodyLog && data) || ''
     }
   }
 
@@ -81,7 +81,7 @@ async function _logResponse (response, logLevel) {
     config = {}
   } = response
 
-  const { method = '', url = '', diableBodyLog } = config
+  const { method = '', url = '', disableBodyLog } = config
   const status = http.STATUS_CODES[statusCode]
 
   const label = logLevel === 'error' ? '[NodeHttp|ResponseError]' : '[NodeHttp|Response]'
@@ -93,7 +93,7 @@ async function _logResponse (response, logLevel) {
       statusCode,
       status,
       headers,
-      body: (!diableBodyLog && data) || '',
+      body: (!disableBodyLog && data) || '',
       responseMessage: '',
       responseTime: -1 // TODO: Handle Request Time Setting
     }
@@ -114,7 +114,7 @@ async function _logRequestError (error = {}) {
     method = '',
     headers = {},
     data,
-    diableBodyLog
+    disableBodyLog
   } = config
 
   const msg = `[NodeHttp|RequestError] ${method} ${url} | ${message}`
@@ -127,7 +127,7 @@ async function _logRequestError (error = {}) {
       url,
       method,
       headers,
-      body: (!diableBodyLog && data) || ''
+      body: (!disableBodyLog && data) || ''
     }
   }
 
@@ -146,7 +146,7 @@ async function _logResponseError (error) {
     data = {}
   } = response
 
-  const { method = '', url = '', diableBodyLog } = config
+  const { method = '', url = '', disableBodyLog } = config
   const status = http.STATUS_CODES[statusCode]
 
   const msg = `[NodeHttp|ResponseError] | ${method} ${url} | ${statusCode} ${status}`
@@ -157,7 +157,7 @@ async function _logResponseError (error) {
       statusCode,
       status,
       headers,
-      body: (!diableBodyLog && data) || '',
+      body: (!disableBodyLog && data) || '',
       responseMessage: '',
       responseTime: -1 // TODO: Handle Request Time Setting
     }
