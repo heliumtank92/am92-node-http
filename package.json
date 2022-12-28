@@ -27,6 +27,7 @@
     ".": "./src/index.mjs"
   },
   "dependencies": {
+    "@am92/api-logger": "^1.0.0",
     "axios": "^1.2.1",
     "axios-retry": "^3.3.1"
   },

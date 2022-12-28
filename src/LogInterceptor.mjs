@@ -1,12 +1,8 @@
 import http from 'http'
-import logger, { httpLogger } from '../../../ApiLogger/am92-api-logger/src/logger.mjs'
+import logger, { httpLogger } from '@am92/api-logger'
 
-// TODO: Change import from api-logger pacakge when published
-// const httpLogger = {
-//   error: () => undefined,
-//   trace: () => undefined
-// }
 const isProduction = process.env.NODE_ENV === 'production'
+const disableDevLogs = process.env.DEBUG?.includes('nodeHttp:-devlog')
 
 const LogInterceptor = {
   request: [requestSuccess, requestError, { synchronous: true }],
@@ -51,7 +47,7 @@ async function _logRequest (config = {}) {
 
   const axiosRetry = config['axios-retry']
 
-  const message = `[NodeHttp|Request] ${method} ${url}`
+  const message = `[NodeHttpRequest] ${method} ${url}`
   const logObject = {
     type: 'NODE_HTTP',
     message,
@@ -67,13 +63,13 @@ async function _logRequest (config = {}) {
 
   httpLogger.trace(logObject)
 
-  if (!isProduction && !axiosRetry) {
-    const devLogObj = { url, method, headers, data }
-    logger.debug('Dev: [NodeHttp|Request]', JSON.stringify(devLogObj, null, 2))
+  if (!isProduction && !axiosRetry && !disableDevLogs) {
+    const devLogObj = { url, method, data }
+    logger.debug('Dev: [NodeHttpRequest]', JSON.stringify(devLogObj, null, 2))
   }
 }
 
-async function _logResponse (response, logLevel) {
+async function _logResponse (response) {
   const {
     status: statusCode,
     headers = {},
@@ -84,8 +80,7 @@ async function _logResponse (response, logLevel) {
   const { method = '', url = '', disableBodyLog } = config
   const status = http.STATUS_CODES[statusCode]
 
-  const label = logLevel === 'error' ? '[NodeHttp|ResponseError]' : '[NodeHttp|Response]'
-  const msg = `${label} | ${method} ${url} | ${statusCode} ${status}`
+  const msg = `[NodeHttpResponse] | ${method} ${url} | ${statusCode} ${status}`
   const logObject = {
     type: 'NODE_HTTP',
     message: msg,
@@ -101,9 +96,9 @@ async function _logResponse (response, logLevel) {
 
   httpLogger.success(logObject)
 
-  if (!isProduction) {
-    const devLogObj = { statusCode, status, headers, data }
-    logger.debug('Dev: [NodeHttp|Response]', JSON.stringify(devLogObj, null, 2))
+  if (!isProduction && !disableDevLogs) {
+    const devLogObj = { statusCode, status, data }
+    logger.success('Dev: [NodeHttpResponse]', JSON.stringify(devLogObj, null, 2))
   }
 }
 
@@ -117,7 +112,7 @@ async function _logRequestError (error = {}) {
     disableBodyLog
   } = config
 
-  const msg = `[NodeHttp|RequestError] ${method} ${url} | ${message}`
+  const msg = `[NodeHttpRequestError] ${method} ${url} | ${message}`
   const logObject = {
     type: 'NODE_HTTP',
     message: msg,
@@ -149,7 +144,7 @@ async function _logResponseError (error) {
   const { method = '', url = '', disableBodyLog } = config
   const status = http.STATUS_CODES[statusCode]
 
-  const msg = `[NodeHttp|ResponseError] | ${method} ${url} | ${statusCode} ${status}`
+  const msg = `[NodeHttpResponseError] | ${method} ${url} | ${statusCode} ${status}`
   const logObject = {
     type: 'NODE_HTTP',
     message: msg,
@@ -165,8 +160,8 @@ async function _logResponseError (error) {
 
   httpLogger.error(logObject)
 
-  if (!isProduction) {
-    const devLogObj = { statusCode, status, headers, data }
-    logger.debug('Dev: [NodeHttp|ResponseError]', JSON.stringify(devLogObj, null, 2))
+  if (!isProduction && !disableDevLogs) {
+    const devLogObj = { statusCode, status, data }
+    logger.error('Dev: [NodeHttpResponseError]', JSON.stringify(devLogObj, null, 2))
   }
 }
