@@ -1,0 +1,42 @@
+{
+  "name": "@am92/node-http",
+  "version": "1.0.0",
+  "description": "HTTP Client for Node Backend Applications",
+  "type": "module",
+  "main": "src/index.mjs",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "git@github.com:heliumtank92/am92-node-http.git",
+  "homepage": "https://github.com/heliumtank92/am92-node-http#readme",
+  "contributors": [
+    {
+      "name": "Ankit Gandhi",
+      "email": "ankitgandhi452@gmail.com",
+      "url": "https://github.com/ankitgandhi452"
+    },
+    {
+      "name": "Mehul Agarwal",
+      "email": "agarwalmehul92@gmail.com",
+      "url": "https://github.com/agarwalmehul"
+    }
+  ],
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.mjs"
+  },
+  "dependencies": {
+    "@am92/api-logger": "^1.0.0",
+    "axios": "^1.2.1",
+    "axios-retry": "^3.3.1"
+  },
+  "keywords": [
+    "node http",
+    "axios",
+    "http",
+    "http client",
+    "request",
+    "response"
+  ]
+}
