@@ -27,8 +27,8 @@
     ".": "./src/NodeHttp.mjs"
   },
   "dependencies": {
-    "@am92/api-logger": "^1.0.0",
-    "axios": "^1.2.1",
+    "@am92/api-logger": "^1.0.2",
+    "axios": "^1.2.2",
     "axios-retry": "^3.3.1"
   },
   "keywords": [

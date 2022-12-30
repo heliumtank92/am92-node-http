@@ -1,18 +1,19 @@
 import http from 'http'
 import logger, { httpLogger } from '@am92/api-logger'
-
-const isProduction = process.env.NODE_ENV === 'production'
-const disableDevLogs = process.env.DEBUG?.includes('nodeHttp:-devlog')
+import DEBUG from './DEBUG.mjs'
 
 const LogInterceptor = {
-  request: [requestSuccess, requestError, { synchronous: true }],
-  response: [responseSuccess, responseError, { synchronous: true }]
+  request: [requestSuccess, requestError],
+  response: [responseSuccess, responseError]
 }
 
 export default LogInterceptor
 
 function requestSuccess (config) {
   _logRequest(config)
+
+  // To Generate TimeStamp
+  config.timestamp = new Date().getTime()
   return config
 }
 
@@ -63,7 +64,7 @@ async function _logRequest (config = {}) {
 
   httpLogger.trace(logObject)
 
-  if (!isProduction && !axiosRetry && !disableDevLogs) {
+  if (!axiosRetry && DEBUG.enableDevLogs) {
     const devLogObj = { url, method, data }
     logger.debug('Dev: [NodeHttpRequest]', JSON.stringify(devLogObj, null, 2))
   }
@@ -77,8 +78,9 @@ async function _logResponse (response) {
     config = {}
   } = response
 
-  const { method = '', url = '', disableBodyLog } = config
+  const { method = '', url = '', disableBodyLog, timestamp } = config
   const status = http.STATUS_CODES[statusCode]
+  const now = new Date().getTime()
 
   const msg = `[NodeHttpResponse] | ${method} ${url} | ${statusCode} ${status}`
   const logObject = {
@@ -90,13 +92,13 @@ async function _logResponse (response) {
       headers,
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
-      responseTime: -1 // TODO: Handle Request Time Setting
+      responseTime: now - timestamp
     }
   }
 
   httpLogger.success(logObject)
 
-  if (!isProduction && !disableDevLogs) {
+  if (DEBUG.enableDevLogs) {
     const devLogObj = { statusCode, status, data }
     logger.success('Dev: [NodeHttpResponse]', JSON.stringify(devLogObj, null, 2))
   }
@@ -160,7 +162,7 @@ async function _logResponseError (error) {
 
   httpLogger.error(logObject)
 
-  if (!isProduction && !disableDevLogs) {
+  if (DEBUG.enableDevLogs) {
     const devLogObj = { statusCode, status, data }
     logger.error('Dev: [NodeHttpResponseError]', JSON.stringify(devLogObj, null, 2))
   }
