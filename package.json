@@ -1,9 +1,9 @@
 {
   "name": "@am92/node-http",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "HTTP Client for Node Backend Applications",
   "type": "module",
-  "main": "src/index.mjs",
+  "main": "src/NodeHttp.mjs",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,11 +24,11 @@
   ],
   "license": "MIT",
   "exports": {
-    ".": "./src/index.mjs"
+    ".": "./src/NodeHttp.mjs"
   },
   "dependencies": {
-    "@am92/api-logger": "^1.0.0",
-    "axios": "^1.2.1",
+    "@am92/api-logger": "^1.0.3",
+    "axios": "^1.2.2",
     "axios-retry": "^3.3.1"
   },
   "keywords": [
