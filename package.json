@@ -1,6 +1,6 @@
 {
   "name": "@am92/node-http",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "HTTP Client for Node Backend Applications",
   "type": "module",
   "main": "dist/NodeHttp.js",
