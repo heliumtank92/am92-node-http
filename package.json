@@ -1,12 +1,15 @@
 {
   "name": "@am92/node-http",
-  "version": "1.0.3",
+  "version": "1.0.6",
   "description": "HTTP Client for Node Backend Applications",
   "type": "module",
   "main": "src/NodeHttp.mjs",
+  "module": "src/NodeHttp.mjs",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo 'Error: no test specified'",
+    "preversion": "pnpm test",
+    "version": "echo 'Versioning'",
+    "postversion": "git push && git push --tags"
   },
   "repository": "git@github.com:heliumtank92/am92-node-http.git",
   "homepage": "https://github.com/heliumtank92/am92-node-http#readme",
@@ -27,7 +30,7 @@
     ".": "./src/NodeHttp.mjs"
   },
   "dependencies": {
-    "@am92/api-logger": "^1.0.3",
+    "@am92/api-logger": "^1.0.9",
     "axios": "^1.2.2",
     "axios-retry": "^3.3.1"
   },
