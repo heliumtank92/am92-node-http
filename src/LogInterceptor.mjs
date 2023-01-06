@@ -1,5 +1,4 @@
 import http from 'http'
-import logger, { httpLogger } from '@am92/api-logger'
 import DEBUG from './DEBUG.mjs'
 
 const LogInterceptor = {
@@ -10,6 +9,7 @@ const LogInterceptor = {
 export default LogInterceptor
 
 function requestSuccess (config) {
+  // process.setImmediate(() => _logRequest(config))
   _logRequest(config)
 
   // To Generate TimeStamp
@@ -18,11 +18,13 @@ function requestSuccess (config) {
 }
 
 function requestError (error) {
+  // process.setImmediate(() => _logRequestError(error))
   _logRequestError(error)
   throw error
 }
 
 function responseSuccess (response) {
+  // process.setImmediate(() => _logResponse(response))
   _logResponse(response)
   return response
 }
@@ -30,14 +32,16 @@ function responseSuccess (response) {
 function responseError (error) {
   const { response } = error
   if (response) {
+    // process.setImmediate(() => _logResponseError(error))
     _logResponseError(error)
   } else {
+    // process.setImmediate(() => _logRequestError(error))
     _logRequestError(error)
   }
   throw error
 }
 
-async function _logRequest (config = {}) {
+function _logRequest (config = {}) {
   const {
     url = '',
     method = '',
@@ -62,15 +66,16 @@ async function _logRequest (config = {}) {
     }
   }
 
-  httpLogger.trace(logObject)
+  const logFunc = console.httpInfo || console.info
+  logFunc(logObject)
 
   if (!axiosRetry && DEBUG.enableDevLogs) {
     const devLogObj = { url, method, data }
-    logger.debug('Dev: [NodeHttpRequest]', JSON.stringify(devLogObj, null, 2))
+    console.debug('Dev: [NodeHttpRequest]', devLogObj)
   }
 }
 
-async function _logResponse (response) {
+function _logResponse (response) {
   const {
     status: statusCode,
     headers = {},
@@ -96,15 +101,17 @@ async function _logResponse (response) {
     }
   }
 
-  httpLogger.success(logObject)
+  const logFunc = console.httpSuccess || console.info
+  logFunc(logObject)
 
   if (DEBUG.enableDevLogs) {
     const devLogObj = { statusCode, status, data }
-    logger.success('Dev: [NodeHttpResponse]', JSON.stringify(devLogObj, null, 2))
+    const logFunc = console.success || console.debug
+    logFunc('Dev: [NodeHttpResponse]', devLogObj)
   }
 }
 
-async function _logRequestError (error = {}) {
+function _logRequestError (error = {}) {
   const { message = '', config = {} } = error
   const {
     url = '',
@@ -128,10 +135,11 @@ async function _logRequestError (error = {}) {
     }
   }
 
-  httpLogger.error(logObject)
+  const logFunc = console.httpError || console.error
+  logFunc(logObject)
 }
 
-async function _logResponseError (error) {
+function _logResponseError (error) {
   const {
     config = {},
     response = {}
@@ -160,10 +168,11 @@ async function _logResponseError (error) {
     }
   }
 
-  httpLogger.error(logObject)
+  const logFunc = console.httpError || console.error
+  logFunc(logObject)
 
   if (DEBUG.enableDevLogs) {
     const devLogObj = { statusCode, status, data }
-    logger.error('Dev: [NodeHttpResponseError]', JSON.stringify(devLogObj, null, 2))
+    console.error('Dev: [NodeHttpResponseError]', devLogObj)
   }
 }
