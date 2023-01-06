@@ -9,34 +9,29 @@ const LogInterceptor = {
 export default LogInterceptor
 
 function requestSuccess (config) {
-  // process.setImmediate(() => _logRequest(config))
-  _logRequest(config)
-
-  // To Generate TimeStamp
   config.timestamp = new Date().getTime()
+  process.setImmediate(() => _logRequest(config))
   return config
 }
 
 function requestError (error) {
-  // process.setImmediate(() => _logRequestError(error))
-  _logRequestError(error)
+  process.setImmediate(() => _logRequestError(error))
   throw error
 }
 
 function responseSuccess (response) {
-  // process.setImmediate(() => _logResponse(response))
-  _logResponse(response)
+  response.now = new Date().getTime()
+  process.setImmediate(() => _logResponse(response))
   return response
 }
 
 function responseError (error) {
+  error.now = new Date().getTime()
   const { response } = error
   if (response) {
-    // process.setImmediate(() => _logResponseError(error))
-    _logResponseError(error)
+    process.setImmediate(() => _logResponseError(error))
   } else {
-    // process.setImmediate(() => _logRequestError(error))
-    _logRequestError(error)
+    process.setImmediate(() => _logRequestError(error))
   }
   throw error
 }
@@ -80,12 +75,12 @@ function _logResponse (response) {
     status: statusCode,
     headers = {},
     data = {},
-    config = {}
+    config = {},
+    now
   } = response
 
   const { method = '', url = '', disableBodyLog, timestamp } = config
   const status = http.STATUS_CODES[statusCode]
-  const now = new Date().getTime()
 
   const msg = `[NodeHttpResponse] | ${method} ${url} | ${statusCode} ${status}`
   const logObject = {
@@ -142,7 +137,8 @@ function _logRequestError (error = {}) {
 function _logResponseError (error) {
   const {
     config = {},
-    response = {}
+    response = {},
+    now
   } = error
 
   const {
@@ -151,7 +147,7 @@ function _logResponseError (error) {
     data = {}
   } = response
 
-  const { method = '', url = '', disableBodyLog } = config
+  const { method = '', url = '', disableBodyLog, timestamp } = config
   const status = http.STATUS_CODES[statusCode]
 
   const msg = `[NodeHttpResponseError] | ${method} ${url} | ${statusCode} ${status}`
@@ -164,7 +160,7 @@ function _logResponseError (error) {
       headers,
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
-      responseTime: -1 // TODO: Handle Request Time Setting
+      responseTime: now - timestamp
     }
   }
 
