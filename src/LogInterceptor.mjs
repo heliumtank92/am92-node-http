@@ -10,18 +10,18 @@ export default LogInterceptor
 
 function requestSuccess (config) {
   config.timestamp = new Date().getTime()
-  process.setImmediate(() => _logRequest(config))
+  setImmediate(() => _logRequest(config))
   return config
 }
 
 function requestError (error) {
-  process.setImmediate(() => _logRequestError(error))
+  setImmediate(() => _logRequestError(error))
   throw error
 }
 
 function responseSuccess (response) {
   response.now = new Date().getTime()
-  process.setImmediate(() => _logResponse(response))
+  setImmediate(() => _logResponse(response))
   return response
 }
 
@@ -29,9 +29,9 @@ function responseError (error) {
   error.now = new Date().getTime()
   const { response } = error
   if (response) {
-    process.setImmediate(() => _logResponseError(error))
+    setImmediate(() => _logResponseError(error))
   } else {
-    process.setImmediate(() => _logRequestError(error))
+    setImmediate(() => _logRequestError(error))
   }
   throw error
 }
