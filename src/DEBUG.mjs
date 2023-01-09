@@ -24,7 +24,7 @@ for (const feature of DEBUG_FEATURES) {
 }
 
 if (DEBUG_ENABLED_FEATURES.length) {
-  console.warn((`[${SERVICE} NodeHttp] Debugging Enabled for: ${DEBUG_ENABLED_FEATURES.join(', ')}`))
+  console.warn((`[${SERVICE} NodeHttp] Debugging Features Enabled: ${DEBUG_ENABLED_FEATURES.join(', ')}`))
 }
 
 export default DEBUG
