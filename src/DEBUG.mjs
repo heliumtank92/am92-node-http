@@ -1,3 +1,5 @@
+import { SERVICE } from './CONFIG.mjs'
+
 const { DEBUG: debug } = process.env
 
 const DEBUG_ID = 'nodeHttp'
@@ -9,10 +11,20 @@ const DEBUG = {
   enableDevLogs: false
 }
 
+const DEBUG_ENABLED_FEATURES = []
+
 const DEBUG_FEATURES = Object.keys(DEBUG)
 for (const feature of DEBUG_FEATURES) {
   const debugFeature = debugFeaturesList.includes(feature)
   DEBUG[feature] = debugAll || debugFeature
+
+  if (DEBUG[feature]) {
+    DEBUG_ENABLED_FEATURES.push(feature)
+  }
+}
+
+if (DEBUG_ENABLED_FEATURES.length) {
+  console.warn((`[${SERVICE} NodeHttp] Debugging Features Enabled: ${DEBUG_ENABLED_FEATURES.join(', ')}`))
 }
 
 export default DEBUG

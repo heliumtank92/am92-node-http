@@ -1,6 +1,6 @@
 {
   "name": "@am92/node-http",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "HTTP Client for Node Backend Applications",
   "type": "module",
   "main": "src/NodeHttp.mjs",
@@ -30,7 +30,6 @@
     ".": "./src/NodeHttp.mjs"
   },
   "dependencies": {
-    "@am92/api-logger": "^1.0.9",
     "axios": "^1.2.2",
     "axios-retry": "^3.3.1"
   },
