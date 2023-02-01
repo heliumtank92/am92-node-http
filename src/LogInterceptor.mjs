@@ -9,29 +9,37 @@ const LogInterceptor = {
 export default LogInterceptor
 
 function requestSuccess (config) {
+  if (config.disableLog) { return config }
+
   config.timestamp = new Date().getTime()
-  process.setImmediate(() => _logRequest(config))
+  setImmediate(() => _logRequest(config))
   return config
 }
 
 function requestError (error) {
-  process.setImmediate(() => _logRequestError(error))
+  if (error.config?.disableLog) { throw error }
+
+  setImmediate(() => _logRequestError(error))
   throw error
 }
 
 function responseSuccess (response) {
+  if (response.config?.disableLog) { return response }
+
   response.now = new Date().getTime()
-  process.setImmediate(() => _logResponse(response))
+  setImmediate(() => _logResponse(response))
   return response
 }
 
 function responseError (error) {
+  if (error.config?.disableLog) { throw error }
+
   error.now = new Date().getTime()
   const { response } = error
   if (response) {
-    process.setImmediate(() => _logResponseError(error))
+    setImmediate(() => _logResponseError(error))
   } else {
-    process.setImmediate(() => _logRequestError(error))
+    setImmediate(() => _logRequestError(error))
   }
   throw error
 }

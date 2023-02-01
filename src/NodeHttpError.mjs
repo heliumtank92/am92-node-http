@@ -26,10 +26,6 @@ export default class NodeHttpError extends Error {
     this.statusCode = statusCode || eStatusCode || DEFAULT_ERROR_STATUS_CODE
     this.errorCode = errorCode || eErrorCode || eCode || DEFAULT_ERROR_CODE
     this.data = data
-    this.error = {
-      ...e,
-      message: eMessage || this.message,
-      errorCode: eErrorCode || this.errorCode
-    }
+    this.error = e
   }
 }
