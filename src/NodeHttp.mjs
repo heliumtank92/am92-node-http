@@ -40,13 +40,13 @@ export default class NodeHttp {
 
       if (response) {
         const { status = 500, data: body } = response
-        const { statusCode, message, data, error: err } = body
+        const { statusCode, message, data, error: err, errorCode } = body
         const e = err || body
 
         const eMap = {
           statusCode: statusCode || status,
           message: message || error.message,
-          errorCode: 'NODE_HTTP::RESPONSE',
+          errorCode: errorCode || 'NODE_HTTP::RESPONSE',
           data
         }
 
