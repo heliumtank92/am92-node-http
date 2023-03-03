@@ -64,7 +64,7 @@ function _logRequest (config = {}) {
       ipAddress: '',
       url,
       method,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || ''
     }
   }
@@ -97,7 +97,7 @@ function _logResponse (response) {
     res: {
       statusCode,
       status,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
       responseTime: now - timestamp
@@ -133,7 +133,7 @@ function _logRequestError (error = {}) {
       ipAddress: '',
       url,
       method,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || ''
     }
   }
@@ -165,7 +165,7 @@ function _logResponseError (error) {
     res: {
       statusCode,
       status,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
       responseTime: now - timestamp
