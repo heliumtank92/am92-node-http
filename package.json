@@ -16,6 +16,9 @@
     "axios": "^1.3.3",
     "axios-retry": "^3.4.0"
   },
+  "devDependencies": {
+    "@types/node": "^18.14.6"
+  },
   "scripts": {
     "test": "echo 'Error: no test specified'",
     "generate:types": "rm -rf types && npx -p typescript tsc",
@@ -49,8 +52,5 @@
     "http client",
     "request",
     "response"
-  ],
-  "devDependencies": {
-    "@types/node": "^18.14.6"
-  }
+  ]
 }
