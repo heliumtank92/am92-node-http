@@ -12,14 +12,14 @@ function requestSuccess (config) {
   if (config.disableLog) { return config }
 
   config.timestamp = new Date().getTime()
-  setImmediate(() => _logRequest(config))
+  _logRequest(config)
   return config
 }
 
 function requestError (error) {
   if (error.config?.disableLog) { throw error }
 
-  setImmediate(() => _logRequestError(error))
+  _logRequestError(error)
   throw error
 }
 
@@ -27,7 +27,7 @@ function responseSuccess (response) {
   if (response.config?.disableLog) { return response }
 
   response.now = new Date().getTime()
-  setImmediate(() => _logResponse(response))
+  _logResponse(response)
   return response
 }
 
@@ -37,9 +37,9 @@ function responseError (error) {
   error.now = new Date().getTime()
   const { response } = error
   if (response) {
-    setImmediate(() => _logResponseError(error))
+    _logResponseError(error)
   } else {
-    setImmediate(() => _logRequestError(error))
+    _logRequestError(error)
   }
   throw error
 }
@@ -64,7 +64,7 @@ function _logRequest (config = {}) {
       ipAddress: '',
       url,
       method,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || ''
     }
   }
@@ -97,7 +97,7 @@ function _logResponse (response) {
     res: {
       statusCode,
       status,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
       responseTime: now - timestamp
@@ -133,7 +133,7 @@ function _logRequestError (error = {}) {
       ipAddress: '',
       url,
       method,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || ''
     }
   }
@@ -165,7 +165,7 @@ function _logResponseError (error) {
     res: {
       statusCode,
       status,
-      headers,
+      headers: { ...headers },
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
       responseTime: now - timestamp
