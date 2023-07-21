@@ -1,5 +1,7 @@
 import http from 'http'
-import DEBUG from './DEBUG.mjs'
+import DEBUG from './DEBUG'
+import { NodeHttpRequestConfig, NodeHttpResponse, ResponseLog } from './TYPES'
+import { NODE_HTTP_CONTEXT } from './CONSTANTS'
 
 const LogInterceptor = {
   request: [requestSuccess, requestError],
@@ -8,34 +10,48 @@ const LogInterceptor = {
 
 export default LogInterceptor
 
-function requestSuccess (config) {
-  if (config.disableLog) { return config }
+function requestSuccess(config: NodeHttpRequestConfig): NodeHttpRequestConfig {
+  const { nodeHttpConfig, nodeHttpContext } = config
+  if (nodeHttpConfig.disableLog) {
+    return config
+  }
 
-  config.timestamp = new Date().getTime()
+  nodeHttpContext.set(NODE_HTTP_CONTEXT.REQ_TS, new Date().getTime())
   _logRequest(config)
   return config
 }
 
-function requestError (error) {
-  if (error.config?.disableLog) { throw error }
+function requestError(error: any): any {
+  const { nodeHttpConfig } = error.config || {}
+  if (nodeHttpConfig.disableLog) {
+    throw error
+  }
 
   _logRequestError(error)
   throw error
 }
 
-function responseSuccess (response) {
-  if (response.config?.disableLog) { return response }
+function responseSuccess(response: NodeHttpResponse): NodeHttpResponse {
+  const { config } = response
+  const { nodeHttpConfig, nodeHttpContext } = config
+  if (nodeHttpConfig.disableLog) {
+    return response
+  }
 
-  response.now = new Date().getTime()
+  nodeHttpContext.set(NODE_HTTP_CONTEXT.RES_TS, new Date().getTime())
   _logResponse(response)
   return response
 }
 
-function responseError (error) {
-  if (error.config?.disableLog) { throw error }
+function responseError(error: any): any {
+  const { response, config } = error
+  const { nodeHttpConfig, nodeHttpContext } = config
+  if (nodeHttpConfig.disableLog) {
+    throw error
+  }
 
-  error.now = new Date().getTime()
-  const { response } = error
+  nodeHttpContext.set(NODE_HTTP_CONTEXT.RES_TS, new Date().getTime())
+
   if (response) {
     _logResponseError(error)
   } else {
@@ -44,14 +60,15 @@ function responseError (error) {
   throw error
 }
 
-function _logRequest (config = {}) {
+function _logRequest(config: NodeHttpRequestConfig): void {
   const {
     url = '',
     method = '',
     headers = {},
     data = {},
-    disableBodyLog
+    nodeHttpConfig
   } = config
+  const { disableBodyLog } = nodeHttpConfig
 
   const axiosRetry = config['axios-retry']
 
@@ -78,19 +95,23 @@ function _logRequest (config = {}) {
   }
 }
 
-function _logResponse (response) {
-  const {
-    status: statusCode,
-    headers = {},
-    data = {},
-    config = {},
-    now
-  } = response
+function _logResponse(response: NodeHttpResponse): void {
+  const { status: statusCode, headers = {}, data = {}, config } = response
 
-  const { method = '', url = '', disableBodyLog, timestamp } = config
+  const {
+    method = '',
+    url = '',
+    nodeHttpConfig,
+    nodeHttpContext
+  } = config || {}
+  const { disableBodyLog } = nodeHttpConfig
   const status = http.STATUS_CODES[statusCode]
 
   const msg = `[NodeHttpResponse] | ${method} ${url} | ${statusCode} ${status}`
+
+  const resTime = nodeHttpContext.get(NODE_HTTP_CONTEXT.RES_TS)
+  const reqTime = nodeHttpContext.get(NODE_HTTP_CONTEXT.REQ_TS)
+  const responseTime = resTime - reqTime
   const logObject = {
     type: 'NODE_HTTP',
     message: msg,
@@ -100,7 +121,7 @@ function _logResponse (response) {
       headers: { ...headers },
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
-      responseTime: now - timestamp
+      responseTime
     }
   }
 
@@ -114,15 +135,16 @@ function _logResponse (response) {
   }
 }
 
-function _logRequestError (error = {}) {
+function _logRequestError(error: any): void {
   const { message = '', config = {} } = error
   const {
     url = '',
     method = '',
     headers = {},
     data,
-    disableBodyLog
-  } = config
+    nodeHttpConfig
+  } = config as NodeHttpRequestConfig
+  const { disableBodyLog } = nodeHttpConfig
 
   const msg = `[NodeHttpRequestError] ${method} ${url} | ${message}`
   const logObject = {
@@ -142,24 +164,30 @@ function _logRequestError (error = {}) {
   logFunc(logObject)
 }
 
-function _logResponseError (error) {
-  const {
-    config = {},
-    response = {},
-    now
-  } = error
+function _logResponseError(error: any): void {
+  const { config = {}, response = {} } = error
 
   const {
     status: statusCode,
     headers = {},
     data = {}
-  } = response
+  } = response as NodeHttpResponse
 
-  const { method = '', url = '', disableBodyLog, timestamp } = config
-  const status = http.STATUS_CODES[statusCode]
+  const {
+    method = '',
+    url = '',
+    nodeHttpConfig,
+    nodeHttpContext
+  } = config as NodeHttpRequestConfig
+
+  const { disableBodyLog } = nodeHttpConfig
+  const status = http.STATUS_CODES[statusCode] || ''
 
   const msg = `[NodeHttpResponseError] | ${method} ${url} | ${statusCode} ${status}`
-  const logObject = {
+  const resTime = nodeHttpContext.get(NODE_HTTP_CONTEXT.RES_TS)
+  const reqTime = nodeHttpContext.get(NODE_HTTP_CONTEXT.REQ_TS)
+  const responseTime = resTime - reqTime
+  const logObject: ResponseLog = {
     type: 'NODE_HTTP',
     message: msg,
     res: {
@@ -168,7 +196,7 @@ function _logResponseError (error) {
       headers: { ...headers },
       body: (!disableBodyLog && data) || '',
       responseMessage: '',
-      responseTime: now - timestamp
+      responseTime
     }
   }
 
