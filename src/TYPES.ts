@@ -1,6 +1,7 @@
 import {
   AxiosError,
   AxiosInterceptorManager,
+  AxiosInterceptorOptions,
   AxiosRequestConfig,
   AxiosResponse,
   CreateAxiosDefaults,
@@ -10,7 +11,10 @@ import {
 import axiosRetry, { IAxiosRetryConfig } from 'axios-retry'
 import { NODE_HTTP_CONTEXT } from './CONSTANTS'
 
+/** @ignore */
 export type Debug = { enableDevLogs: boolean }
+
+/** @ignore */
 export type DebugKeys = keyof Debug
 
 export { AxiosError }
@@ -47,8 +51,14 @@ export const DefaultNodeHttpAxiosConfig: NodeHttpAxiosConfig = {
  *
  * @typedef {NodeHttpConfig}
  */
-export type NodeHttpConfig = {
+export interface NodeHttpConfig {
+  /**
+   * Disable generated Request and Response logs
+   */
   disableLog: boolean
+  /**
+   * Omit `body` key from the generated Request and Response logs
+   */
   disableBodyLog: boolean
 }
 

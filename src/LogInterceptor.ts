@@ -3,6 +3,7 @@ import DEBUG from './DEBUG'
 import { NodeHttpRequestConfig, NodeHttpResponse, ResponseLog } from './TYPES'
 import { NODE_HTTP_CONTEXT } from './CONSTANTS'
 
+/** @ignore */
 const LogInterceptor = {
   request: [requestSuccess, requestError],
   response: [responseSuccess, responseError]
@@ -10,6 +11,7 @@ const LogInterceptor = {
 
 export default LogInterceptor
 
+/** @ignore */
 function requestSuccess(config: NodeHttpRequestConfig): NodeHttpRequestConfig {
   const { nodeHttpConfig, nodeHttpContext } = config
   if (nodeHttpConfig.disableLog) {
@@ -21,6 +23,7 @@ function requestSuccess(config: NodeHttpRequestConfig): NodeHttpRequestConfig {
   return config
 }
 
+/** @ignore */
 function requestError(error: any): any {
   const { nodeHttpConfig } = error.config || {}
   if (nodeHttpConfig.disableLog) {
@@ -31,6 +34,7 @@ function requestError(error: any): any {
   throw error
 }
 
+/** @ignore */
 function responseSuccess(response: NodeHttpResponse): NodeHttpResponse {
   const { config } = response
   const { nodeHttpConfig, nodeHttpContext } = config
@@ -43,6 +47,7 @@ function responseSuccess(response: NodeHttpResponse): NodeHttpResponse {
   return response
 }
 
+/** @ignore */
 function responseError(error: any): any {
   const { response, config } = error
   const { nodeHttpConfig, nodeHttpContext } = config
@@ -60,6 +65,7 @@ function responseError(error: any): any {
   throw error
 }
 
+/** @ignore */
 function _logRequest(config: NodeHttpRequestConfig): void {
   const {
     url = '',
@@ -95,6 +101,7 @@ function _logRequest(config: NodeHttpRequestConfig): void {
   }
 }
 
+/** @ignore */
 function _logResponse(response: NodeHttpResponse): void {
   const { status: statusCode, headers = {}, data = {}, config } = response
 
@@ -135,6 +142,7 @@ function _logResponse(response: NodeHttpResponse): void {
   }
 }
 
+/** @ignore */
 function _logRequestError(error: any): void {
   const { message = '', config = {} } = error
   const {
@@ -164,6 +172,7 @@ function _logRequestError(error: any): void {
   logFunc(logObject)
 }
 
+/** @ignore */
 function _logResponseError(error: any): void {
   const { config = {}, response = {} } = error
 

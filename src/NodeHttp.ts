@@ -106,9 +106,8 @@ export default class NodeHttp {
    */
   async request(options: NodeHttpRequestOptions): Promise<NodeHttpResponse> {
     const { nodeHttpConfig = {}, ...restOptions } = options
-    const sanitizedOptions = _sanitizeOptions(restOptions)
     const requestOptions = {
-      ...sanitizedOptions,
+      ...restOptions,
       nodeHttpContext: this.context,
       nodeHttpConfig: {
         ...this.nodeHttpConfig,
@@ -162,46 +161,23 @@ export default class NodeHttp {
     }
   }
 
-  useRequestInterceptor(interceptor = []) {
-    if (interceptor.length) {
-      return this.client.interceptors.request.use(...interceptor)
+  useRequestInterceptor(interceptors = []) {
+    if (interceptors?.length) {
+      return this.client.interceptors.request.use(...interceptors)
     }
   }
 
-  useResponseInterceptor(interceptor = []) {
-    if (interceptor.length) {
-      return this.client.interceptors.response.use(...interceptor)
+  useResponseInterceptor(interceptors = []) {
+    if (interceptors?.length) {
+      return this.client.interceptors.response.use(...interceptors)
     }
   }
 
-  ejectRequestInterceptor(index: number) {
-    this.client.interceptors.request.eject(index)
+  ejectRequestInterceptor(index: number): void {
+    return this.client.interceptors.request.eject(index)
   }
 
-  ejectResponseInterceptor(index: number) {
-    this.client.interceptors.response.eject(index)
+  ejectResponseInterceptor(index: number): void {
+    return this.client.interceptors.response.eject(index)
   }
-}
-
-/** @ignore */
-function _sanitizeOptions(
-  options: NodeHttpRequestOptions
-): NodeHttpRequestOptions {
-  const { url, urlParams, ...restOptions } = options
-
-  let sanitizedOptions: NodeHttpRequestOptions = {
-    url,
-    ...restOptions
-  }
-
-  if (!urlParams) {
-    return options
-  }
-
-  Object.keys(urlParams).forEach(key => {
-    const value: any = urlParams[key]
-    sanitizedOptions.url = sanitizedOptions.url.replace(`:${key}`, value)
-  })
-
-  return sanitizedOptions
 }
