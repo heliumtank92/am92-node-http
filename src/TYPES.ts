@@ -164,12 +164,12 @@ export interface NodeHttpErrorMap {
 }
 
 /**
- * Interface for NodeHttp interceptors
+ * Interface for `NodeHttp.interceptors`
  *
  * @interface
- * @typedef {NodeHttpInterceptors}
+ * @typedef {NodeHttpAxiosInterceptors}
  */
-export interface NodeHttpInterceptors {
+export interface NodeHttpAxiosInterceptors {
   /**
    * Request interceptor manager
    */

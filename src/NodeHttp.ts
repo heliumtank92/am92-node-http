@@ -13,7 +13,7 @@ import {
   NodeHttpConfig,
   NodeHttpRequestOptions,
   NodeHttpResponse,
-  NodeHttpInterceptors,
+  NodeHttpAxiosInterceptors,
   NodeHttpErrorMap
 } from './TYPES'
 
@@ -44,7 +44,7 @@ export default class NodeHttp {
   /**
    * Axios interceptors attached to NodeHttp instance for easier use.
    */
-  interceptors: NodeHttpInterceptors
+  interceptors: NodeHttpAxiosInterceptors
 
   /**
    * Creates an instance of NodeHttp.
@@ -80,14 +80,6 @@ export default class NodeHttp {
     ])
 
     this.interceptors = this.client.interceptors
-
-    // Use Request & Response Interceptors to Axios Client
-    this.useRequestInterceptor = this.useRequestInterceptor.bind(this)
-    this.useResponseInterceptor = this.useResponseInterceptor.bind(this)
-
-    // Eject Request & Response Interceptors to Axios Client
-    this.ejectRequestInterceptor = this.ejectRequestInterceptor.bind(this)
-    this.ejectResponseInterceptor = this.ejectResponseInterceptor.bind(this)
 
     // Use Default Interceptors
     this._useDefaultInterceptors()
@@ -159,25 +151,5 @@ export default class NodeHttp {
       this.interceptors.request.use(...LogInterceptor.request)
       this.interceptors.response.use(...LogInterceptor.response)
     }
-  }
-
-  useRequestInterceptor(interceptors = []) {
-    if (interceptors?.length) {
-      return this.client.interceptors.request.use(...interceptors)
-    }
-  }
-
-  useResponseInterceptor(interceptors = []) {
-    if (interceptors?.length) {
-      return this.client.interceptors.response.use(...interceptors)
-    }
-  }
-
-  ejectRequestInterceptor(index: number): void {
-    return this.client.interceptors.request.eject(index)
-  }
-
-  ejectResponseInterceptor(index: number): void {
-    return this.client.interceptors.response.eject(index)
   }
 }
