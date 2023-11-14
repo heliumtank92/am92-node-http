@@ -98,8 +98,10 @@ export default class NodeHttp {
    */
   async request(options: NodeHttpRequestOptions): Promise<NodeHttpResponse> {
     const { nodeHttpConfig = {}, ...restOptions } = options
+    const sanitizedOptions = this._sanitizeOptions(restOptions)
+
     const requestOptions = {
-      ...restOptions,
+      ...sanitizedOptions,
       nodeHttpContext: this.context,
       nodeHttpConfig: {
         ...this.nodeHttpConfig,
@@ -155,5 +157,18 @@ export default class NodeHttp {
         this.interceptors.response.use(...LogInterceptor.response)
       }
     }
+  }
+
+  /** @ignore */
+  _sanitizeOptions(options: NodeHttpRequestOptions) {
+    if (options.urlParams) {
+      const urlParams = options.urlParams
+      Object.keys(urlParams).forEach(param => {
+        const value = urlParams[param]
+        options.url = options.url.replace(`:${param}`, `${value}`)
+      })
+    }
+
+    return options
   }
 }
