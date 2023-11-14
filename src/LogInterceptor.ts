@@ -1,10 +1,15 @@
 import http from 'http'
 import DEBUG from './DEBUG'
-import { NodeHttpRequestConfig, NodeHttpResponse, ResponseLog } from './TYPES'
+import {
+  NodeHttpInterceptor,
+  NodeHttpRequestConfig,
+  NodeHttpResponse,
+  ResponseLog
+} from './TYPES'
 import { NODE_HTTP_CONTEXT } from './CONSTANTS'
 
 /** @ignore */
-const LogInterceptor = {
+const LogInterceptor: NodeHttpInterceptor = {
   request: [requestSuccess, requestError],
   response: [responseSuccess, responseError]
 }
@@ -12,7 +17,7 @@ const LogInterceptor = {
 export default LogInterceptor
 
 /** @ignore */
-function requestSuccess(config: NodeHttpRequestConfig): NodeHttpRequestConfig {
+function requestSuccess(config: NodeHttpRequestConfig) {
   const { nodeHttpConfig, nodeHttpContext } = config
   if (nodeHttpConfig.disableLog) {
     return config
@@ -35,7 +40,7 @@ function requestError(error: any): any {
 }
 
 /** @ignore */
-function responseSuccess(response: NodeHttpResponse): NodeHttpResponse {
+function responseSuccess(response: NodeHttpResponse) {
   const { config } = response
   const { nodeHttpConfig, nodeHttpContext } = config
   if (nodeHttpConfig.disableLog) {
@@ -48,7 +53,7 @@ function responseSuccess(response: NodeHttpResponse): NodeHttpResponse {
 }
 
 /** @ignore */
-function responseError(error: any): any {
+function responseError(error: any) {
   const { response, config } = error
   const { nodeHttpConfig, nodeHttpContext } = config
   if (nodeHttpConfig.disableLog) {

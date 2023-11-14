@@ -226,3 +226,35 @@ declare global {
     httpInfo?(data: RequestLog | ResponseLog): void
   }
 }
+
+/** @ignore */
+type NodeHttpInterceptors<T> = [
+  (value: T) => T | Promise<T>,
+  ((error: any) => any) | null | undefined,
+  AxiosInterceptorOptions | undefined
+]
+
+/**
+ * Type for NodeHttpRequestInterceptor.
+ *
+ * @typedef {NodeHttpRequestInterceptor}
+ */
+export type NodeHttpRequestInterceptor =
+  NodeHttpInterceptors<NodeHttpRequestConfig>
+
+/**
+ * Type for NodeHttpResponseInterceptor.
+ *
+ * @typedef {NodeHttpResponseInterceptor}
+ */
+export type NodeHttpResponseInterceptor = NodeHttpInterceptors<NodeHttpResponse>
+
+/**
+ * Type for NodeHttpInterceptor.
+ *
+ * @typedef {NodeHttpInterceptor}
+ */
+export type NodeHttpInterceptor = {
+  request: Partial<NodeHttpRequestInterceptor>
+  response: Partial<NodeHttpResponseInterceptor>
+}

@@ -81,13 +81,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="interfaces/NodeHttpAxiosError.html" data-type="entity-link" >NodeHttpAxiosError</a>
                             </li>
                             <li class="link">
+                                <a href="interfaces/NodeHttpAxiosInterceptors.html" data-type="entity-link" >NodeHttpAxiosInterceptors</a>
+                            </li>
+                            <li class="link">
                                 <a href="interfaces/NodeHttpConfig.html" data-type="entity-link" >NodeHttpConfig</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/NodeHttpErrorMap.html" data-type="entity-link" >NodeHttpErrorMap</a>
-                            </li>
-                            <li class="link">
-                                <a href="interfaces/NodeHttpInterceptors.html" data-type="entity-link" >NodeHttpInterceptors</a>
                             </li>
                             <li class="link">
                                 <a href="interfaces/NodeHttpRequestConfig.html" data-type="entity-link" >NodeHttpRequestConfig</a>

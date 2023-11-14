@@ -148,8 +148,12 @@ export default class NodeHttp {
     const { disableLog } = this.nodeHttpConfig
 
     if (!disableLog) {
-      this.interceptors.request.use(...LogInterceptor.request)
-      this.interceptors.response.use(...LogInterceptor.response)
+      if (LogInterceptor.request) {
+        this.interceptors.request.use(...LogInterceptor.request)
+      }
+      if (LogInterceptor.response) {
+        this.interceptors.response.use(...LogInterceptor.response)
+      }
     }
   }
 }
