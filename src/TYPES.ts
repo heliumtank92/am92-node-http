@@ -88,6 +88,10 @@ export interface NodeHttpRequestOptions
   /**
    * HTTP Method to be used which making the API request.
    */
+  urlParams?: { [K: string]: string | number | boolean | undefined }
+  /**
+   * HTTP Method to be used which making the API request.
+   */
   method: Method | string
   /**
    * NodeHttpConfig to be used exclusively for the given API request.

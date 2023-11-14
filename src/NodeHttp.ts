@@ -106,8 +106,9 @@ export default class NodeHttp {
    */
   async request(options: NodeHttpRequestOptions): Promise<NodeHttpResponse> {
     const { nodeHttpConfig = {}, ...restOptions } = options
+    const sanitizedOptions = _sanitizeOptions(restOptions)
     const requestOptions = {
-      ...restOptions,
+      ...sanitizedOptions,
       nodeHttpContext: this.context,
       nodeHttpConfig: {
         ...this.nodeHttpConfig,
@@ -134,7 +135,7 @@ export default class NodeHttp {
           const eMap: NodeHttpErrorMap = {
             statusCode: statusCode || status,
             message: message || statusText,
-            errorCode: errorCode || 'NODE_HTTP::RESPONSE'
+            errorCode: errorCode || 'NodeHttp::RESPONSE'
           }
           throw new NodeHttpError(body, eMap)
         }
@@ -147,6 +148,7 @@ export default class NodeHttp {
         // Handle any other form of error
         throw new NodeHttpError(e)
       })
+
     return response
   }
 
@@ -179,4 +181,27 @@ export default class NodeHttp {
   ejectResponseInterceptor(index: number) {
     this.client.interceptors.response.eject(index)
   }
+}
+
+/** @ignore */
+function _sanitizeOptions(
+  options: NodeHttpRequestOptions
+): NodeHttpRequestOptions {
+  const { url, urlParams, ...restOptions } = options
+
+  let sanitizedOptions: NodeHttpRequestOptions = {
+    url,
+    ...restOptions
+  }
+
+  if (!urlParams) {
+    return options
+  }
+
+  Object.keys(urlParams).forEach(key => {
+    const value: any = urlParams[key]
+    sanitizedOptions.url = sanitizedOptions.url.replace(`:${key}`, value)
+  })
+
+  return sanitizedOptions
 }
