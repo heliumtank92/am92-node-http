@@ -12,6 +12,7 @@
 ## Table of Content
 - [Installation](#installation)
 - [Contributors](#contributors)
+- [Creating a NodeHttp Instance](#creating-a-nodehttp-instance)
 - [Resources](#resources)
 - [License](#license)
 
@@ -21,6 +22,16 @@
 ```bash
 $ npm install --save @am92/node-http
 ```
+<br />
+
+## Creating a NodeHttp Instance
+```javascript
+import { NodeHttp } from '@am92/node-http'
+
+const nodeHttp = new NodeHttp()
+export default nodeHttp
+```
+
 <br />
 
 ## Contributors

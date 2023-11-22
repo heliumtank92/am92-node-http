@@ -28,7 +28,7 @@ import { DEFAULT_REQUEST_ERROR } from './CONSTANTS/ERRORS'
  * @class
  * @typedef {NodeHttp}
  */
-export default class NodeHttp {
+export class NodeHttp {
   /**
    * nodeHttpConfig initialized at NodeHttp instance level for all API requests.
    */
